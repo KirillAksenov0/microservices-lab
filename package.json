@@ -1,0 +1,12 @@
+{
+  "name": "microservices-lab",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "account",
+    "auth"
+  ],
+  "scripts": {
+    "build:shared": "yarn workspace @lab/shared build"
+  }
+}

@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: account-db-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: account
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: microservices-redis
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: microservices-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:redis
+    ports:
+      - "29094:8081"
+    depends_on:
+      - redis
+    restart: unless-stopped
