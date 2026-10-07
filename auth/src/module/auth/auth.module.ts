@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from '@lab/shared/redis';
 import { AccountModule } from '../../internal/account/account.module.js';
+import { KafkaModule } from '@lab/shared/kafka';
 
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
@@ -11,6 +12,7 @@ import { AuthService } from './auth.service.js';
     AccountModule,
     JwtModule.register({}),
     RedisModule,
+    KafkaModule
   ],
 
   controllers: [

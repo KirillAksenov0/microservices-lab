@@ -1,5 +1,13 @@
-import { Controller, Get, Post, Body, 
-  Patch, Param, Delete, Query} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 
 import { UserService } from './user.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -7,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserDto } from './dto/user.dto.js';
 import GetUserFilterDto from './dto/get-users-filter.dto.js';
 import { SignInDto } from './dto/sign-in.dto.js';
+import { ChangeBalanceDto } from './dto/change-balance.dto.js';
 
 @Controller('user')
 export class UserController {
@@ -15,38 +24,32 @@ export class UserController {
   ) {}
 
   @Post()
-  create(
-    @Body() createUserDto: CreateUserDto,
-  ) {
-    return this.userService.create(
-      createUserDto,
-    );
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+  }
+
+  @Post('balance')
+  balance(@Body() dto: ChangeBalanceDto) {
+    return this.userService.changeBalanceFromHttp(dto);
   }
 
   @Get()
   findAll(
-    @Query()
-    getUserFilterDto: GetUserFilterDto,
+    @Query() getUserFilterDto: GetUserFilterDto,
   ): Promise<{
     items: UserDto[];
     total: number;
   }> {
-    return this.userService.findAll(
-      getUserFilterDto,
-    );
+    return this.userService.findAll(getUserFilterDto);
   }
 
   @Get('verification')
-verification(
-  @Query() dto: SignInDto,
-): Promise<boolean> {
-  return this.userService.verification(dto);
-}
+  verification(@Query() dto: SignInDto): Promise<boolean> {
+    return this.userService.verification(dto);
+  }
 
   @Get(':id')
-  findOne(
-    @Param('id') id: string,
-  ) {
+  findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
@@ -55,16 +58,11 @@ verification(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(
-      id,
-      updateUserDto,
-    );
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(
-    @Param('id') id: string,
-  ) {
+  remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
 }

@@ -504,6 +504,14 @@
     ora "5.4.1"
     undici "6.20.1"
 
+"@nestjs/microservices@^12.0.1":
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-12.1.2.tgz#06e33a3fe515c7fdd7296c8aebdb41e47b7a3bca"
+  integrity sha512-X0k7nrSD7IM9Zv1LrYANoFewSTd6V89u2V72QDFTxjiLblipmpHrNBxfgl+PDJHp41/Z/aN/skGi0Q0kabDm2g==
+  dependencies:
+    iterare "1.2.1"
+    tslib "2.8.1"
+
 "@nestjs/platform-express@^12.0.1":
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-12.1.0.tgz#55039abdfede600a1e4bc8f41e9b66c33ace6956"
@@ -2140,6 +2148,11 @@ jws@^4.0.1:
   dependencies:
     jwa "^2.0.1"
     safe-buffer "^5.0.1"
+
+kafkajs@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/kafkajs/-/kafkajs-2.2.4.tgz#59e6e16459d87fdf8b64be73970ed5aa42370a5b"
+  integrity sha512-j/YeapB1vfPT2iOIUn/vxdyKEuhuY2PxMBvf5JWux6iSaukAccrMtXEY/Lb7OvavDhOWME589bpLrEdnVHjfjA==
 
 libphonenumber-js@^1.11.1:
   version "1.13.14"

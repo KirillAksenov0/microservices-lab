@@ -4,7 +4,8 @@
   "workspaces": [
     "shared",
     "account",
-    "auth"
+    "auth",
+    "transaction"
   ],
   "scripts": {
     "build:shared": "yarn workspace @lab/shared build"

@@ -7,6 +7,7 @@ import {
 
 import { UserEntity } from './entities/user.entity.js';
 import {
+  ChangeBalanceParams,
   CheckExistUserParams,
   FindUserParams,
 } from './user.types.js';
@@ -32,12 +33,13 @@ export class UserRepository {
   }
 
   async findByLogin(
-  login: string,
-): Promise<UserEntity | null> {
-  return this.userRepository.findOneBy({
-    login,
-  });
-}
+    login: string,
+  ): Promise<UserEntity | null> {
+    return this.userRepository.findOneBy({
+      login,
+      isDeleted: false,
+    });
+  }
 
   async findAndCount(
     params: FindUserParams,
@@ -55,18 +57,33 @@ export class UserRepository {
   }
 
   async updateUser(
-  userId: string,
-  data: DeepPartial<UserEntity>,
-): Promise<void> {
-  await this.userRepository.update({ userId }, data);
-}
+    userId: string,
+    data: DeepPartial<UserEntity>,
+  ): Promise<void> {
+    // Поле balance изменяется только через changeBalance —
+    // исключаем его из общего апдейта, чтобы случайно не перезаписать.
+    const { balance, ...rest } = data;
+    await this.userRepository.update({ userId }, rest);
+  }
+
+  async changeBalance(
+    params: ChangeBalanceParams,
+  ): Promise<void> {
+    await this.userRepository.update(
+      { userId: params.userId },
+      { balance: params.balance },
+    );
+  }
 
   async deleteUser(
     id: string,
   ): Promise<void> {
-    await this.userRepository.delete({
-      userId: id,
-    });
+    // Soft-delete: помечаем пользователя удалённым,
+    // чтобы транзакции не ссылались на несуществующего userId.
+    await this.userRepository.update(
+      { userId: id },
+      { isDeleted: true },
+    );
   }
 
   async checkExistUser(
@@ -78,16 +95,17 @@ export class UserRepository {
 
     query.where(
       `${alias}.login = :login`,
-      {
-        login: params.login,
-      },
+      { login: params.login },
     );
 
     query.orWhere(
       `${alias}.phone = :phone`,
-      {
-        phone: params.phone,
-      },
+      { phone: params.phone },
+    );
+
+    query.andWhere(
+      `${alias}.isDeleted = :isDeleted`,
+      { isDeleted: false },
     );
 
     const result = await query.getOne();
@@ -102,21 +120,30 @@ export class UserRepository {
     const query =
       this.userRepository.createQueryBuilder(alias);
 
+    // Удалённых пользователей в выборку не включаем
+    query.andWhere(
+      `${alias}.isDeleted = :isDeleted`,
+      { isDeleted: false },
+    );
+
     if (params?.userIds?.length) {
       query.andWhere(
         `${alias}.userId IN (:...userIds)`,
-        {
-          userIds: params.userIds,
-        },
+        { userIds: params.userIds },
       );
     }
 
     if (params?.phones?.length) {
       query.andWhere(
         `${alias}.phone IN (:...phones)`,
-        {
-          phones: params.phones,
-        },
+        { phones: params.phones },
+      );
+    }
+
+    if (params?.login) {
+      query.andWhere(
+        `${alias}.login = :login`,
+        { login: params.login },
       );
     }
 

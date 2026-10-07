@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
 import {
   DocumentBuilder,
   SwaggerModule,
 } from '@nestjs/swagger';
+
+import { kafkaOptionsFactory } from '@lab/shared/kafka';
 
 import { AccountAppModule } from './module/app.module.js';
 
@@ -36,6 +39,11 @@ async function bootstrap() {
     }),
   );
 
+  // Подключение Kafka-консьюмера (для обработки события TransactionSaved)
+  app.connectMicroservice<MicroserviceOptions>(
+    kafkaOptionsFactory(config),
+  );
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle(`${serviceName} microservice`)
     .setDescription('Account service API')
@@ -46,6 +54,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
   SwaggerModule.setup(`${httpPrefix}/docs`, app, document);
+
+  // Запуск микросервисов (Kafka) ДО app.listen
+  await app.startAllMicroservices();
 
   await app.listen(Number(httpPort), httpHost);
 

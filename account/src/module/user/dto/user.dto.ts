@@ -70,6 +70,13 @@ export class UserDto {
   @IsString()
   email: string;
 
+  @ApiProperty({
+    description: 'Баланс пользователя', 
+    type: String })
+  @Expose()
+  @IsString()
+  balance: string;
+
   constructor(entity: Partial<UserEntity>) {
     return plainToInstance(
       UserDto,
