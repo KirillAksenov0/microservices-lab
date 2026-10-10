@@ -9,5 +9,8 @@
   ],
   "scripts": {
     "build:shared": "yarn workspace @lab/shared build"
+  },
+  "devDependencies": {
+    "eslint": "^10.12.0"
   }
 }
