@@ -24,6 +24,9 @@ export default tseslint.config(
       '**/coverage/**',
       '**/.yarn/**',
       '**/volumes/**',
+      '**/jest.config.cjs',   // ← добавили
+      '**/*.cjs',            // ← на всякий случай — все CommonJS-файлы
+      '**/eslint.config.js', // ← сам конфиг ESLint не нужно линтить
     ],
   },
 );
