@@ -45,7 +45,7 @@ describe('TransactionService', () => {
 
   describe('create', () => {
     it('should create transaction and publish event', async () => {
-      // Arrange
+
       const dto: CreateTransactionDto = {
         userId: 'user-1',
         amount: '100',
@@ -69,10 +69,8 @@ describe('TransactionService', () => {
         .spyOn(kafka, 'produce')
         .mockResolvedValue(undefined);
 
-      // Act
       await service.create(dto);
 
-      // Assert
       expect(repository.createTransaction).toHaveBeenCalledWith({
         userId: 'user-1',
         amount: '100',

@@ -81,7 +81,6 @@ export class TransactionService {
     });
   }
 
-  /** Вызывается из Kafka при получении BalanceChanged */
   async updateStatus(event: EventBalanceChangedData): Promise<void> {
     const status =
       event.status === BalanceChangedStatus.FAILED
